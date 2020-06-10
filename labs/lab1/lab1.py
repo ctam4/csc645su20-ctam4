@@ -1,11 +1,11 @@
 ########################################################################################################################
 # Class: Computer Networks
-# Date: 02/03/2020
+# Date: 06/10/2020
 # Lab1: Object Oriented Programming
 # Goal: Learning Python OOP basics
-# Student Name:
-# Student ID:
-# Student Github Username:
+# Student Name: Calvin Tam
+# Student ID: 917902523
+# Student Github Username: ctam4
 # Instructions: Read each problem carefully, and implement them correctly.
 #               Your grade in labs is based on passing all the unit tests provided.
 #               The following is an example of output for a program that passes all the unit tests.
@@ -24,12 +24,12 @@ Name: Jose
 SID: 91744100
 Github Username: joseortizcostadev
 """
-name = "" # TODO: your name
-SID = 000000000 # TODO: your student id
-git_username = "" # TODO: your github username
-print(name)
-print(SID)
-print(git_username)
+name = "Calvin Tam" # TODO: your name
+SID = 917902523 # TODO: your student id
+git_username = "ctam4" # TODO: your github username
+print("Name: " + name)
+print("SID: " + str(SID))
+print("Github Username: " + git_username)
 print('\n')
 
 ########################## Problem 1: Classes I ########################################################################
@@ -43,6 +43,8 @@ class Employee (object):
         :param department:
         """
         # TODO: create two local instance attributes and set them to the assigned parameters.
+        self.name = name
+        self.department = department
 
 
     def info(self):
@@ -51,7 +53,7 @@ class Employee (object):
         :return: "<employee name> works in the <department name> department"
                  i.e Sarah works in the Engineering department
         """
-        return None 
+        return self.name + " works in the " + self.department + " department"
 
 
 
@@ -76,7 +78,7 @@ class Department(object):
         :return: VOID
         """
         # TODO: implement your code here
-        pass
+        self.name = name
 
     def add_employee(self, employee_name):
         """
@@ -86,15 +88,15 @@ class Department(object):
         """
         # TODO: create a employee object
         # TODO: add the employee object to the self.employees list.
-        pass
+        self.employees.append(Employee(employee_name, self.name))
 
     def list_of_employees(self):
         """
 
         :return: the list of employees working in this department.
         """
-        # TODO: return the self.employee list
-        return None
+        # TODO: return the self.employees list
+        return self.employees
 
 
 print('\n')
@@ -118,7 +120,7 @@ class Manager(Employee):
         :return: <info from employee> " with manager id: " <manager id>
                  i.e Sarah works in the Engineering department with manager id: 2345"
         """
-        return None
+        return super().info() + " with manager id: " + str(self.managerID)
 
 
 
