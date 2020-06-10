@@ -6,7 +6,7 @@ Welcome to Computer Networks!. Please modify this README file with the following
 
 | Assignment                   |     C/NC      |
 | ---------------------------- | ------------- |
-| Lab 0                        | not completed |
+| Lab 0                        | completed |
 | Lab 1                        | not completed |
 | Lab 2                        | not completed |
 | Lab 3                        | not completed |
