@@ -120,7 +120,7 @@ class Manager(Employee):
         :return: <info from employee> " with manager id: " <manager id>
                  i.e Sarah works in the Engineering department with manager id: 2345"
         """
-        return super().info() + " with manager id: " + str(self.managerID)
+        return self.info() + " with manager id: " + str(self.managerID)
 
 
 
