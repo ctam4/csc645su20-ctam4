@@ -14,7 +14,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     print("Listening at " + HOST + "/" + str(PORT))
     conn, addr = s.accept() # accepts new clients
     with conn: # for each client that connects
-        client_id = addr[1]
+        client_id = {'clientid': addr[1]}
         serialized_data = pickle.dumps(client_id) # creates a stream of bytes
         conn.send(serialized_data)
         while True:
