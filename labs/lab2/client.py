@@ -1,11 +1,11 @@
 ########################################################################################################################
 # Class: Computer Networks
-# Date: 02/03/2020
+# Date: 06/16/2020
 # Lab3: TCP Client Socket
 # Goal: Learning Networking in Python with TCP sockets
-# Student Name:
-# Student ID:
-# Student Github Username:
+# Student Name: Calvin Tam
+# Student ID: 917902523
+# Student Github Username: ctam4
 # Instructions: Read each problem carefully, and implement them correctly.  No partial credit will be given.
 ########################################################################################################################
 
@@ -27,9 +27,9 @@ class Client(object):
         """
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.client_id = None
-        self.student_name = None # TODO: your name
-        self.github_username = None # TODO: your username
-        self.sid = 0 # TODO: your student id
+        self.student_name = "Calvin Tam" # TODO: your name
+        self.github_username = "ctam4" # TODO: your username
+        self.sid = 917902523 # TODO: your student id
 
     def connect(self, server_ip_address, server_port):
         """
@@ -39,15 +39,15 @@ class Client(object):
         :return:
         """
         #TODO: 1. use the self.client to create a connection with the server
-
+        self.client.connect((server_ip_address, server_port))
         #TODO: 2. once the client creates a successful connection, the server will send the client id to this client.
         #      call the method set_client_id() to implement that functionality.
-
+        self.set_client_id()
         # data dictionary already created for you. Don't modify.
         data = {'student_name': self.student_name, 'github_username': self.github_username, 'sid': self.sid}
 
         #TODO  3. send the above data to the server. using the send method which has been already implemented for you.
-
+        self.send(data)
         while True: # client is put in listening mode to retrieve data from server.
             data = self.receive()
             if not data:
@@ -88,6 +88,7 @@ class Client(object):
         TODO: close this client
         :return: VOID
         """
+        self.client.close()
 # main execution
 if __name__ == '__main__':
     server_ip_address = "127.0.0.1"  # don't modify for this lab only
