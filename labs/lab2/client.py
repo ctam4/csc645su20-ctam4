@@ -47,7 +47,7 @@ class Client(object):
         data = {'student_name': self.student_name, 'github_username': self.github_username, 'sid': self.sid}
 
         #TODO  3. send the above data to the server. using the send method which has been already implemented for you.
-        self.send(data)
+        self.send(data.encode())
         while True: # client is put in listening mode to retrieve data from server.
             data = self.receive()
             if not data:
