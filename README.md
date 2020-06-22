@@ -9,7 +9,7 @@ Welcome to Computer Networks!. Please modify this README file with the following
 | Lab 0                        | completed |
 | Lab 1                        | completed |
 | Lab 2                        | completed |
-| Lab 3                        | not completed |
+| Lab 3                        | completed |
 | Lab 4                        | not completed |
 | Lab 5                        | not completed |
 | Lab 6                        | not completed |
