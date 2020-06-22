@@ -56,7 +56,7 @@ class Server(object):
             self.serversocket.listen()
             print("Server listening at " + str(self.host) + "/" + str(self.port))
         except:
-            print("Server bind or listen failed")
+            print("Failed at server binding or listening:", sys.exc_info()[0])
             self.serversocket.close()
 
     def _handler(self, clienthandler):
@@ -89,7 +89,7 @@ class Server(object):
                self._handler(clienthandler) # receive, process, send response to client.
             except:
                # handle exceptions here
-               pass #remove this line after implemented.
+               print("Failed at accepting client:", sys.exc_info()[0])
 
     def _send_clientid(self, clienthandler, clientid):
         """
