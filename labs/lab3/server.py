@@ -12,6 +12,7 @@
 ########################################################################################################################
 
 # don't modify this imports.
+import sys
 import socket
 import pickle
 from threading import Thread
@@ -58,6 +59,7 @@ class Server(object):
         except:
             print("Failed at server binding or listening:", sys.exc_info()[0])
             self.serversocket.close()
+            raise
 
     def _handler(self, clienthandler):
         """
@@ -72,7 +74,9 @@ class Server(object):
              raw_data = clienthandler.recv(1024) # receives data from this client
              if not raw_data:
                 break
+             print("Received data from client: " + str(pickle.loads(raw_data)))
              status = {'message': "server got the data"}
+             print("Sending acknowledge to client: " + str(status))
              self.send(clienthandler, status)
 
     def _accept_clients(self):
@@ -90,6 +94,7 @@ class Server(object):
             except:
                # handle exceptions here
                print("Failed at accepting client:", sys.exc_info()[0])
+               raise
 
     def _send_clientid(self, clienthandler, clientid):
         """
@@ -110,7 +115,7 @@ class Server(object):
         :param data: raw data (not serialized yet)
         :return: VOID
         """
-        serialized_data = pickle.dump(data) # creates a stream of bytes
+        serialized_data = pickle.dumps(data) # creates a stream of bytes
         clienthandler.send(serialized_data) # data sent to the client.
 
     def receive(self, clienthandler, MAX_ALLOC_MEM=4096):
