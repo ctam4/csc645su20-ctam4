@@ -1,11 +1,11 @@
 ########################################################################################################################
 # Class: Computer Networks
-# Date: 02/03/2020
-# Lab3: Server support for multiple clients
+# Date: 06/30/2020
+# Lab4: Threading clients in server side
 # Goal: Learning Networking in Python with TCP sockets
-# Student Name:
-# Student ID:
-# Student Github Username:
+# Student Name: Calvin Tam
+# Student ID: 917902523
+# Student Github Username: ctam4
 # Lab Instructions: No partial credit will be given. Labs must be completed in class, and must be committed to your
 #               personal repository by 9:45 pm.
 # Running instructions: This program needs the server to run. The server creates an object of this class.
@@ -43,16 +43,42 @@ class ClientHandler:
         TODO: keep this handler object listening for more incoming data from the client
         :return: VOID
         """
-        pass # remove this line after implemented.
+        while True:
+             # TODO: receive data from client
+             # TODO: if no data, break the loop
+             # TODO: Otherwise, send acknowledge to client. (i.e a message saying 'server got the data
+             data = self.receive() # receives data from this client
+             self.print_lock.acquire()
+             print("Received data from client " + str(self.client_id) + ": " + str(data))
+             self.print_lock.release()
+             #status = {'message': "server got the data"}
+             #self.print_lock.acquire()
+             #print("Sending acknowledge to client " + str(self.client_id) + ": " + str(status))
+             #self.print_lock.release()
+             #self.send(status)
+
+    def send_clientid(self):
+        """
+        # TODO: send the client id to a client that just connected to the server.
+        :param clienthandler:
+        :param clientid:
+        :return: VOID
+        """
+        client_id = {'clientid': self.client_id}
+        self.send(client_id)
 
     def send(self, data):
-        serialized_data = pickle.dumps(data)
-        self.handler.send(data)
+        serialized_data = pickle.dumps(data) # creates a stream of bytes
+        self.handler.send(serialized_data) # data sent to the client.
 
-    def receive(self, max_mem_alloc=4096):
-        raw_data = self.handler.recv(max_mem_alloc)
-        data = pickle.loads(raw_data)
-        return data
+    def receive(self, MAX_ALLOC_MEM=4096):
+        # server receives data
+        data_from_client = self.handler.recv(MAX_ALLOC_MEM)
+        # deserializes the data received
+        serialized_data = pickle.loads(data_from_client)
+        return serialized_data #change the return value after implemente.
 
     def run(self):
+        # TODO: send assigned id to the new client. hint: call the send_clientid(..) method
+        self.send_clientid()
         self.process_client_data()
