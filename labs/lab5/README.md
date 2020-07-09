@@ -123,6 +123,7 @@ you don't even try to provide an answer.
 
 ### Write your response to this lab here
 
+The solution can be multi-threading the client socket on a different port on P2 for downloading data from P3. For example, BitTorrent uses UPnP to open different ports to communicate with other peers.
 
 
 
