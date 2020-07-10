@@ -74,6 +74,8 @@ class ClientHandler:
     def receive(self, MAX_ALLOC_MEM=4096):
         # server receives data
         data_from_client = self.handler.recv(MAX_ALLOC_MEM)
+        if not data_from_client:
+            return None
         # deserializes the data received
         serialized_data = pickle.loads(data_from_client)
         return serialized_data #change the return value after implemente.

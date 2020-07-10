@@ -72,6 +72,8 @@ class Client(object):
         :return: the deserialized data.
         """
         raw_data = self.client.recv(MAX_BUFFER_SIZE) # deserializes the data from server
+        if not raw_data:
+            return None
         return pickle.loads(raw_data)
 
     def set_client_id(self):
