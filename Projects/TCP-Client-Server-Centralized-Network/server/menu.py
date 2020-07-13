@@ -14,6 +14,7 @@
 #
 ########################################################################################
 
+
 class Menu(object):
     """
     This class handles all the actions related to the user menu.
@@ -35,40 +36,9 @@ class Menu(object):
     def set_client(self, client):
         self.client = client
 
-    def show_menu(self):
-        """
-        TODO: 1. send a request to server requesting the menu.
-        TODO: 2. receive and process the response from server (menu object) and set the menu object to self.menu
-        TODO: 3. print the menu in client console.
-        :return: VOID
-        """
-        pass
-
-    def process_user_data(self):
-        """
-        TODO: according to the option selected by the user, prepare the data that will be sent to the server.
-        :param option:
-        :return: VOID
-        """
-        data = {}
-        option = self.option_selected()
-        if 1 <= option <= 6: # validates a valid option
-           # TODO: implement your code here
-           # (i,e  algo: if option == 1, then data = self.menu.option1, then. send request to server with the data)
-           pass
-
-    def option_selected(self):
-        """
-        TODO: takes the option selected by the user in the menu
-        :return: the option selected.
-        """
-        option = 0
-        # TODO: your code here.
-        return option
-
     def get_menu(self):
         """
-        TODO: Inplement the following menu
+        Implement the following menu
         ****** TCP CHAT ******
         -----------------------
         Options Available:
@@ -80,30 +50,51 @@ class Menu(object):
         6. Disconnect from server
         :return: a string representing the above menu.
         """
-        menu = ""
-        # TODO: implement your code here
+        menu = "****** TCP CHAT ******\n"
+        menu += "-----------------------\n"
+        menu += "Options Available:\n"
+        menu += "1. Get user list\n"
+        menu += "2. Send a message\n"
+        menu += "3. Get my messages\n"
+        menu += "4. Create a new channel\n"
+        menu += "5. Chat in a channel with your friends\n"
+        menu += "6. Disconnect from server"
         return menu
 
     def option1(self):
         """
         TODO: Prepare the user input data for option 1 in the menu
-        :param option:
         :return: a python dictionary with all the data needed from user in option 1.
         """
         data = {}
         data['option'] = 1
-        # Your code here.
+        # requesting how many user input
+        data['params'] = []
+        # output message
+        data['output'] = "Users in server: "
         return data
 
-    def option2(self):
+    def option2(self, status):
         """
         TODO: Prepare the user input data for option 2 in the menu
-        :param option:
+        :param status BOOLEAN:
         :return: a python dictionary with all the data needed from user in option 2.
         """
         data = {}
         data['option'] = 2
-        # Your code here.
+        if not status:
+            # requesting how many user input
+            data['params'] = range(2)
+            data['input'] = []
+            # input[0] message
+            data['input'].insert(0, "Enter your message: ")
+            # input[1] message
+            data['input'].insert(1, "Enter recipent id: ")
+        else:
+            # requesting how many user input
+            data['params'] = []
+            # output message
+            data['output'] = "Message sent!"
         return data
 
     def option3(self):
@@ -113,11 +104,14 @@ class Menu(object):
         :return: a python dictionary with all the data needed from user in option 3.
         """
         data = {}
-        data['option'] = 3
-        # Your code here.
+        data['option'] = range(3)
+        # requesting how many user input
+        data['params'] = []
+        # output message
+        data['output'] = "My messages:"
         return data
 
-    def option4(self):
+    def option4(self, status):
         """
         TODO: Prepare the user input data for option 4 in the menu
         :param option:
@@ -125,10 +119,20 @@ class Menu(object):
         """
         data = {}
         data['option'] = 4
-        # Your code here.
+        if not status:
+            # requesting how many user input
+            data['params'] = range(1)
+            data['input'] = []
+            # input[0] message
+            data['input'].insert(0, "Enter new room id: ")
+        else:
+            # requesting how many user input
+            data['params'] = []
+            # output message
+            data['output'] = "Chatroom created!"
         return data
 
-    def option5(self):
+    def option5(self, status=None, room_id=None):
         """
         TODO: Prepare the user input data for option 5 in the menu
         :param option:
@@ -136,7 +140,49 @@ class Menu(object):
         """
         data = {}
         data['option'] = 5
-        # Your code here.
+        if status == "enroll":
+            # requesting how many user input
+            data['params'] = range(1)
+            data['input'] = []
+            # input[0] message
+            data['input'].insert(0, "Enter chat room id to join: ")
+        elif status == "welcome":
+            # requesting how many user input
+            data['params'] = []
+        elif status == "i_talk":
+            # requesting how many user input
+            data['params'] = range(1, 2)
+            data['input'] = []
+            # input[0] message
+            data['input'].insert(0, room_id)
+            # input[1] message
+            data['input'].insert(1, self.client.id_key + "> ")
+        elif status == "u_talk":
+            # requesting how many user input
+            data['params'] = []
+            # output message
+        elif status == "i_join":
+            # requesting how many user input
+            data['params'] = []
+            # output message
+            data['output'] = "Joined to chat room."
+            data['output'] += "\nType 'bye' to exit this chat room."
+            data['output'] += "\nEnter blank to refresh chat room."
+        elif status == "i_leave":
+            # requesting how many user input
+            data['params'] = []
+            # output message
+            data['output'] = "Left from chatroom."
+        elif status == "u_join":
+            # requesting how many user input
+            data['params'] = []
+            # output message
+            data['output'] = self.client.id_key + " joined."
+        elif status == "u_leave":
+            # requesting how many user input
+            data['params'] = []
+            # output message
+            data['output'] = self.client.id_key + " left."
         return data
 
     def option6(self):
@@ -147,5 +193,8 @@ class Menu(object):
         """
         data = {}
         data['option'] = 6
-        # Your code here.
+        # requesting how many user input
+        data['params'] = []
+        # output message
+        data['output'] = "Goodbye! You are being disconnected from server."
         return data

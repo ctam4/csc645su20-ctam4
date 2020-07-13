@@ -10,26 +10,34 @@
 #                   Note: Must run the server before the client.
 ########################################################################
 
+import sys
 from builtins import object
 import socket
-from threading import Thread
+from threading import Thread, Event
 import pickle
+from client_handler import ClientHandler
+
 
 class Server(object):
 
     MAX_NUM_CONN = 10
 
-    def __init__(self, ip_address='127.0.0.1', port=12005):
+    def __init__(self, ip_address="127.0.0.1", port=12005):
         """
         Class constructor
         :param ip_address:
         :param port:
         """
+        # set server info variables
+        self.ip_address = ip_address
+        self.port = port
         # create an INET, STREAMing socket
         self.serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.clients = {} # dictionary of clients handlers objects handling clients. format {clientid:client_handler_object}
-        # TODO: bind the socket to a public host, and a well-known port
-
+        self.clients = {}
+        self.chatrooms = {}
+        # dictionary of clients handlers objects handling clients. format {clientid:client_handler_object}
+        # bind the socket to a public host, and a well-known port
+        self.serversocket.bind((self.ip_address, self.port))
 
     def _listen(self):
         """
@@ -38,9 +46,15 @@ class Server(object):
         i.e "Listening at 127.0.0.1/10000"
         :return: VOID
         """
-        #TODO: your code here
-        pass
-
+        try:
+            self.serversocket.listen()
+            # print server listening message
+            print("Server listening at " + self.ip_address + "/" + str(self.port))
+        except:
+            # handle exception
+            print("Failed at server binding or listening:", sys.exc_info()[0])
+            self.serversocket.close()
+            raise
 
     def _accept_clients(self):
         """
@@ -49,32 +63,103 @@ class Server(object):
         """
         while True:
             try:
-                #TODO: Accept a client
-                #TODO: Create a thread of this client using the client_handler_threaded class
-                pass
+                # Accept a client
+                clientsocket, addr = self.serversocket.accept()
+                clientsocket.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, True)
+                clientsocket.settimeout(0.01)
+                # Create a thread of this client using the client_handler_thread class
+                Thread(
+                    target=self.client_handler_thread,
+                    args=(clientsocket, addr)).start()
+            except KeyboardInterrupt:
+                # handle control+c
+                break
             except:
-                #TODO: Handle exceptions
-                pass
+                # Handle exceptions
+                print("Failed at accepting / threading client:",
+                      sys.exc_info()[0])
+                raise
 
+    # def send_ack(self, clientsocket, n, MAX_BUFFER_SIZE=4096):
+    #     """
+    #     Send acknowledge
+    #     :param clientsocket:
+    #     :param n: size of serialized data
+    #     :return: VOID
+    #     """
+    #     ack = {'received': n}
+    #     print(ack) #debug
+    #     serialized_ack = pickle.dumps(ack)
+    #     clientsocket.sendall(serialized_ack)
+    #
+    # def receive_ack(self, clientsocket, n):
+    #     """
+    #     Receive and validate acknowledge
+    #     :param clientsocket:
+    #     :param n: size of sent serialized data
+    #     :return: BOOLEAN
+    #     """
+    #     if not n in self.acknowledges:
+    #         print("Incomplete data submission (" + str(n) + "sent).")
 
     def send(self, clientsocket, data):
         """
-        TODO: Serializes the data with pickle, and sends using the accepted client socket.
+        Serializes the data with pickle, and sends using the accepted client socket.
         :param clientsocket:
         :param data:
-        :return:
+        :return: VOID
         """
-        pass
-
+        print("### send -- start") #debug
+        print(data) #debug
+        print("### send -- end") #debug
+        # creates a stream of bytes
+        serialized_data = pickle.dumps(data)
+        while True:
+            try:
+                # data sent to the client
+                clientsocket.sendall(serialized_data)
+                # # check acknowledge
+                # try:
+                #     if not receive_ack(clientsocket, n):
+                #         continue
+            except socket.timeout:
+                continue
+            else:
+                break
 
     def receive(self, clientsocket, MAX_BUFFER_SIZE=4096):
         """
-        TODO: Deserializes the data with pickle
+        Deserializes the data with pickle
         :param clientsocket:
         :param MAX_BUFFER_SIZE:
         :return: the deserialized data
         """
-        return None
+        raw_data = b''
+        # server receives data (even splitted)
+        while True:
+            try:
+                fragment = clientsocket.recv(MAX_BUFFER_SIZE)
+                if not fragment:
+                    break
+                raw_data += fragment
+                if len(fragment) < MAX_BUFFER_SIZE:
+                    break
+            except socket.timeout:
+                continue
+        if not raw_data:
+            return None
+        # deserializes the data received
+        deserialized_data = pickle.loads(raw_data)
+        print("### received -- start") #debug
+        print(deserialized_data) #debug
+        print("### received -- end") #debug
+        # # send acknowledge if this is not acknowledge
+        # if not 'received' in deserialized_data.keys():
+        #     send_ack(clientsocket, len(raw_data))
+        #     return deserialized_data
+        # else:
+        #     receive_ack(clientsocket, len(raw_data))
+        return deserialized_data
 
     def send_client_id(self, clientsocket, id):
         """
@@ -94,10 +179,20 @@ class Server(object):
         :param address:
         :return: a client handler object.
         """
-        self.send_client_id(clientsocket)
-        #TODO: create a new client handler object and return it
-        return None
-
+        # threading event
+        ready = Event()
+        # create a new client handler object and return it
+        # inits all the components in client handler object
+        # self is the server instance
+        client_handler = ClientHandler(ready, self, clientsocket, address)
+        # adds the client handler object to the list of all the clients objects created by this server.
+        # key: client id, value: client handler
+        # assumes dict was initialized in class constructor
+        self.clients[client_handler.client_id] = client_handler
+        # start client handler engine when it is ready
+        ready.wait()
+        client_handler.run()
+        return client_handler
 
     def run(self):
         """
@@ -111,5 +206,3 @@ class Server(object):
 if __name__ == '__main__':
     server = Server()
     server.run()
-
-
