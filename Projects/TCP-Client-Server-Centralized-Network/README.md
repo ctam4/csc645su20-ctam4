@@ -3,11 +3,17 @@
 Please use this README file to provide the following documentation for this project:
 
 * Your name and student id
+  - Calvin Tam (917902523)
 * General description of the project (a few sentences)
+  - A TCP Server and Client that users can exchange messages privately and in chatroom.
 * If you used external Python modules/libraries. Provide a requirements.txt file  
 * Python version and compatibility issues (if any). Your project must be run exactly as in the running instructions described below in this file
+  - 3.7.3
 * Attach screenshots or videos to this file to illustrate how your program works for all the options in the menu. 
 * A few sentences about all the challenges you found during the implementation of this project and how you overcame them. Please be honest here. 
+  - Small packets causes TCP delayed acknowledgement (Nagle's algorithm). Disabled it
+  - Exception handling on broken pipe, client disconnected.
+  - Blocked input from python requires entering blank to refresh.
 
 ## Note that failure to provide the above docs will result in a 30% deduction in your final grade for this project. 
 
