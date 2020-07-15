@@ -36,6 +36,10 @@ You are allowed to use diagrams for your response.
 
 ### Your response here. 
 
+For a decentralized BitTorrent network, it requires every client to act as a tracker to exchange their peers list.
+
+BitTorrent implements a protocol called "Mainline DHT" (DHT stands for distribured hash table) to find other peers without a tracker for the same SHA-1 hash of the torrent file.
+
 
 
 
