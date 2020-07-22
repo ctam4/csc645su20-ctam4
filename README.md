@@ -16,7 +16,7 @@ Welcome to Computer Networks!. Please modify this README file with the following
 | Lab 7                        | completed |
 | Lab 8                        | not completed |
 | Lab 9                        | not completed |
-| TCP Client/Server Network    | not completed |
+| TCP Client/Server Network    | completed |
 | P2P Decentralized Network    | not completed |
 | Routing Protocol (EC)        | not completed |
 
