@@ -5,34 +5,59 @@ A basic template structure is provided, but you may need to implement more metho
 For example, the payload method depending of the option selected
 """
 
+from message import Message
+
 class PWP(object):
     # pstr and pstrlen constants used by the handshake process
     PSTR = "BitTorrent protocol"
     PSTRLEN = 19
-    # TODO: Define ID constants for all the message fields such as unchoked, interested....
+    # Define ID constants for all the message fields such as unchoked, interested....
+    TYPE_CHOKE = 0
+    TYPE_UNCHOKE = 1
+    TYPE_INTERESTED = 2
+    TYPE_UNINTERESTED = 3
+    TYPE_HAVE = 4
+    TYPE_BITFIELD = 5
+    TYPE_REQUEST = 6
+    TYPE_PIECE = 7
+    TYPE_CANCEL = 8
 
-    def __init__(self):
+    def __init__(self, num_pieces):
         """
         Empty constructor
         """
-        pass
+        self.message = Message()
+        self.message.init_bitfield(num_pieces)
 
     def handshake(self, info_hash, peer_id, pstrlen=PSTRLEN, pstr=PSTR):
         """
-        TODO: implement the handshake
+        implement the handshake
         :param options:
         :return: the handshake message
         """
-        pass
+        handshake = {'info_hash': info_hash, 'peer_id': peer_id, 'pstrlen': pstrlen, 'pstr': pstr}
+        return handshake
 
     def message(self, len, message_id, payload):
         """
-        TODO: implement the message
+        implement the message
         :param len:
         :param message_id:
         :param payload:
         :return: the message
         """
-        pass
+        switcher = {
+            None: self.message.keep_alive,
+            TYPE_CHOKE: self.message.choke,
+            TYPE_UNCHOKE: self.message.unchoke,
+            TYPE_INTERESTED: self.message.interested,
+            TYPE_UNINTERESTED: self.message.not_interested,
+            TYPE_HAVE: { **self.message.have, **payload },
+            TYPE_BITFIELD: self.message.get_bitfield(),
+            TYPE_REQUEST: { **self.message.request, **payload },
+            TYPE_PIECE: { **self.message.piece, **payload },
+            TYPE_CANCEL: { **self.message.cancel, **payload },
+        }
+        return switcher.get(message_id)
 
 
