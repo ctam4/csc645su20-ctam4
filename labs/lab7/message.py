@@ -1,3 +1,14 @@
+########################################################################################################################
+# Class: Computer Networks
+# Date: 07/21/2020
+# Lab7: P2P: The BitTorrent Peer Wire Protocol
+# Goal: create a Python class that implements the services provided by the Peer Wire Protocol
+# Student Name: Calvin Tam
+# Student ID: 917902523
+# Student Github Username: ctam4
+# Instructions: Read each problem carefully, and implement them correctly.  No partial credit will be given.
+########################################################################################################################
+
 # Author:         Jose Ortiz (class instructor)
 # Date:           04/24/2020
 # Description:    This file contains the Message and Lab7UnitTests classes.
