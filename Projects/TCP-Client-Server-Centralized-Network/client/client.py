@@ -117,7 +117,7 @@ class Client(object):
             pass
         except:
             # handle exception
-            print("Failed at client connecting or during active connection:", sys.exc_info()[0])
+            print("Failed at client connecting or during active connection: ", sys.exc_info()[0])
             self.close()
             raise
         else:
@@ -215,7 +215,11 @@ class Client(object):
                 for i in data['params']:
                     user_input[i] = input(data['input'][i])
                 # ready return message
-                res = {'option': data['option'], 'params': data['params'], 'input': user_input}
+                res = {
+                    'option': data['option'],
+                    'params': data['params'],
+                    'input': user_input
+                }
                 # send return message to server
                 self.send(res)
 

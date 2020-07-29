@@ -69,7 +69,7 @@ class ClientHandler(object):
                 break
             except:
                 # handle other exceptions
-                print("Failed at running at client thread:", sys.exc_info()[0])
+                print("Failed at running at client thread: ", sys.exc_info()[0])
                 raise
         # remove users from server client list
         self.delete_client_data()

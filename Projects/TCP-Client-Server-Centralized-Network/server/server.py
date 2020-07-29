@@ -52,7 +52,7 @@ class Server(object):
             print("Server listening at " + self.ip_address + "/" + str(self.port))
         except:
             # handle exception
-            print("Failed at server binding or listening:", sys.exc_info()[0])
+            print("Failed at server binding or listening: ", sys.exc_info()[0])
             self.serversocket.close()
             raise
 
@@ -70,14 +70,14 @@ class Server(object):
                 # Create a thread of this client using the client_handler_thread class
                 Thread(
                     target=self.client_handler_thread,
-                    args=(clientsocket, addr)).start()
+                    args=(clientsocket, addr)
+                    ).start()
             except KeyboardInterrupt:
                 # handle control+c
                 break
             except:
                 # Handle exceptions
-                print("Failed at accepting / threading client:",
-                      sys.exc_info()[0])
+                print("Failed at accepting / threading client:", sys.exc_info()[0])
                 raise
 
     # def send_ack(self, clientsocket, n, MAX_BUFFER_SIZE=4096):
