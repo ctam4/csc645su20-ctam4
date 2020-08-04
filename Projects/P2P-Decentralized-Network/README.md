@@ -3,11 +3,21 @@
 Please use this README file to provide the following documentation for this project:
 
 * Your name and student id
+  - Calvin Tam (917902523)
 * General description of the project (a few sentences)
+  - A BitTorrent client with DHT. (THP for trackers, PWP for peers)
 * If you used external Python modules/libraries. Provide a requirements.txt file  
 * Python version and compatibility issues (if any)
+  - 3.7.3
 * Clear and specific instructions about how to run your project. If your project does not run or contains errors, you'll get a 0 in the project no matter how much work you put on it. So, test your code properly and make sure that it runs without errors.
+  - Use `age2.torrent`. `age.torrent`'s announce list is missing protocol and gives error on importing with external library.
+  - Run this command to start: `python3 peer.py <torrent file path>`
 * A few sentences about all the challenges you found during the implementation of this project and how you overcame them. Please be honest here. 
+  - No idea how the protocol works e.g. diagrams. PDF provided helps a little bit but not much. I had to google and check specificiation online for implementation. At this point, I have no idea which message goes after another message. There should be at least a protocol flow diagram or some output example.
+  - Time limitation in summer. This project requires the labs files to begin but there are too many blanks. I do not even know if the labs are working correctly.
+  - Handling bencode data for THP and PWP is complicated. I am using `yabencode` library just to decode/encode data for simplifiction. There is no point to manually parsing binary while this is not the logic part of the protocol.
+  - Manually coding and parasing THP (HTTP based protocol) makes it complicated and difficult from scratch while we are not allowed to use any library for basic HTTP server.
+  - If the goal is to exchange data using BitTorrent protocols, then this project is way too advanced from scartch. TCP project should be making a tracker server instead. I can only reuse some core part of code from TCP project as most codes are useless in this proejct.
 
 ## Note that failure to provide the above docs will result in a 30% deduction in your final grade for this project. 
 
