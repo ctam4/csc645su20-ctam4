@@ -81,7 +81,7 @@ class Message:
         # The port message is sent by newer versions of the Mainline that implements a DHT tracker.
         # The listen port is the port this peer's DHT node is listening on.
         # This peer should be inserted in the local routing table (if DHT tracker is supported).
-        self.port = {'index': b'0003', 'id': 9, 'listen-port': None}
+        self.port = {'len': b'0003', 'id': 9, 'listen-port': None}
 
         #  Tracker requests have the following keys:
         #      info_hash
