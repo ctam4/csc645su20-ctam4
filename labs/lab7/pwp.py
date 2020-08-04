@@ -49,7 +49,7 @@ class PWP(object):
         handshake = {'info_hash': info_hash, 'peer_id': peer_id, 'pstrlen': pstrlen, 'pstr': pstr}
         return handshake
 
-    def message(self, len, message_id, payload):
+    def message(self, len, message_id, payload=None):
         """
         implement the message
         :param len:
@@ -59,15 +59,15 @@ class PWP(object):
         """
         switcher = {
             None: self.message.keep_alive,
-            TYPE_CHOKE: self.message.choke,
-            TYPE_UNCHOKE: self.message.unchoke,
-            TYPE_INTERESTED: self.message.interested,
-            TYPE_UNINTERESTED: self.message.not_interested,
-            TYPE_HAVE: { **self.message.have, **payload },
-            TYPE_BITFIELD: self.message.get_bitfield(),
-            TYPE_REQUEST: { **self.message.request, **payload },
-            TYPE_PIECE: { **self.message.piece, **payload },
-            TYPE_CANCEL: { **self.message.cancel, **payload },
+            self.TYPE_CHOKE: self.message.choke,
+            self.TYPE_UNCHOKE: self.message.unchoke,
+            self.TYPE_INTERESTED: self.message.interested,
+            self.TYPE_UNINTERESTED: self.message.not_interested,
+            self.TYPE_HAVE: { **self.message.have, **payload },
+            self.TYPE_BITFIELD: self.message.get_bitfield(),
+            self.TYPE_REQUEST: { **self.message.request, **payload },
+            self.TYPE_PIECE: { **self.message.piece, **payload },
+            self.TYPE_CANCEL: { **self.message.cancel, **payload },
         }
         return switcher.get(message_id)
 
