@@ -1,6 +1,6 @@
 #######################################################################################
 # File:             menu.py
-# Author:           Jose Ortiz
+# Author:           Calvin Tam
 # Purpose:          CSC645 Assigment #1 TCP socket programming
 # Description:      Template Menu class. You are free to modify this
 #                   file to meet your own needs. Additionally, you are
@@ -11,7 +11,6 @@
 #                   clients creates a connection.
 # Running:          This class is dependent of other classes.
 # Usage :           menu = Menu() # creates object
-#
 ########################################################################################
 
 

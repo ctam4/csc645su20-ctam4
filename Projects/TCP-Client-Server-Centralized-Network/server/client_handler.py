@@ -1,13 +1,12 @@
 #######################################################################
 # File:             client_handler.py
-# Author:           Jose Ortiz
+# Author:           Calvin Tam
 # Purpose:          CSC645 Assigment #1 TCP socket programming
 # Description:      Template ClientHandler class. You are free to modify this
 #                   file to meet your own needs. Additionally, you are
 #                   free to drop this client handler class, and use a version of yours instead.
-# Running:          Python 2: python server.py
-#                   Python 3: python3 server.py
-#                   Note: Must run the server before the client.
+# Running:          This class is dependent of other classes.
+# Usage :           client_handler = ClientHandler() # creates object
 ########################################################################
 
 import sys

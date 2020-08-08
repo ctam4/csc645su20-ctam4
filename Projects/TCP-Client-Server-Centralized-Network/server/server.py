@@ -1,6 +1,6 @@
 #######################################################################
 # File:             server.py
-# Author:           Jose Ortiz
+# Author:           Calvin Tam
 # Purpose:          CSC645 Assigment #1 TCP socket programming
 # Description:      Template server class. You are free to modify this
 #                   file to meet your own needs. Additionally, you are
