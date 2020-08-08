@@ -49,7 +49,7 @@ class PWP(object):
         handshake = {'info_hash': info_hash, 'peer_id': peer_id, 'pstrlen': pstrlen, 'pstr': pstr}
         return handshake
 
-    def message(self, len, message_id, payload=None):
+    def message(self, len, message_id, payload={}):
         """
         implement the message
         :param len:
