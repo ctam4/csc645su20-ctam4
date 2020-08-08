@@ -1,3 +1,13 @@
+#######################################################################
+# File:             peer.py
+# Author:           Calvin Tam
+# Purpose:          CSC645 Assigment #2 P2P Decentralized Network with BitTorrent Protocol
+# Description:      Template peer class. You are free to modify this
+#                   file to meet your own needs. Additionally, you are
+#                   free to drop this peer class, and add yours instead.
+# Running:          Python 3: python3 client.py <torrent file>
+########################################################################
+
 import uuid
 import hashlib
 from threading import Thread
@@ -8,6 +18,7 @@ sys.path.insert(0, './server')
 
 from peer_server import PeerServer
 from tracker_server import TrackerServer
+
 
 class Peer(object):
     PEER_SERVER_PORT = 6000

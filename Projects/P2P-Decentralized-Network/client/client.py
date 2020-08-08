@@ -1,3 +1,14 @@
+#######################################################################################
+# File:             client.py
+# Author:           Calvin Tam
+# Purpose:          CSC645 Assigment #2 P2P Decentralized Network with BitTorrent Protocol
+# Description:      Template Client class. You are free to modify this
+#                   file to meet your own needs. Additionally, you are
+#                   free to drop this client class, and use a version of yours instead.
+# Running:          This class is dependent of other classes.
+# Usage :           client = Client() # creates object
+########################################################################################
+
 import socket
 import pickle
 import sys

@@ -1,3 +1,14 @@
+#######################################################################################
+# File:             tracker_server.py
+# Author:           Calvin Tam
+# Purpose:          CSC645 Assigment #2 P2P Decentralized Network with BitTorrent Protocol
+# Description:      Template Server class. You are free to modify this
+#                   file to meet your own needs. Additionally, you are
+#                   free to drop this server class, and use a version of yours instead.
+# Running:          This class is dependent of other classes.
+# Usage :           tracker_server = TrackerServer() # creates object
+########################################################################################
+
 from threading import Thread, Event, Timer
 import torf
 import urllib.parse

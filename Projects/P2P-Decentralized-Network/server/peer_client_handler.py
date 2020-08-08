@@ -1,3 +1,14 @@
+#######################################################################################
+# File:             peer_client_handler.py
+# Author:           Calvin Tam
+# Purpose:          CSC645 Assigment #2 P2P Decentralized Network with BitTorrent Protocol
+# Description:      Template ClientHandler class. You are free to modify this
+#                   file to meet your own needs. Additionally, you are
+#                   free to drop this client handler class, and use a version of yours instead.
+# Running:          This class is dependent of other classes.
+# Usage :           peer_client_handler = PeerClientHandler() # creates object
+########################################################################################
+
 import yabencode
 import sys
 
