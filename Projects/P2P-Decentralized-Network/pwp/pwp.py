@@ -59,10 +59,9 @@ class PWP(object):
         for key, value in data.items():
             if not key in ['id', 'len']:
                 message[key] = value
-        print(message)
         return message
 
-    def make_message(self, message_id, payload=None):
+    def make_message(self, message_id, payload={}):
         """
         implement the message
         :param message_id:

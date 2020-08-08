@@ -24,7 +24,7 @@ class PeerClient(Client):
     def __init__(self, server):
         """
         Inhert __init__ from base class and process new parameter
-        :param id_key:
+        :param server:
         :param torrent_info_hash:
         :return: VOID
         """
@@ -32,6 +32,8 @@ class PeerClient(Client):
         self.torrent_info_hash = self.server.torrent_info_hash
         # init PWP
         self.pwp = PWP(self.server.num_pieces)
+        # init status
+        self.status = { 'choked': True, 'interested': False }
 
     def connect(self, ip_address, port, path=None):
         """
@@ -44,18 +46,25 @@ class PeerClient(Client):
             # use the self.client to create a connection with the server
             self.clientsocket.connect((ip_address, port))
             # print connected message
-            print("[" + self.id_key + " CLIENT] Connected to peer server: " + ip_address + "/" + str(port))
+            print("[" + self.server.id_key + " CLIENT] Connected to peer server: " + ip_address + "/" + str(port))
             # send handshake
-            self.send(self.pwp.make_handshake(self.torrent_info_hash, self.id_key))
+            self.send(self.pwp.make_handshake(self.torrent_info_hash, self.server.id_key))
             # once the client creates a successful connection, the server will send handshake to this client.
             # client is put in listening mode to retrieve data from server.
             while True:
-                # handle closed pipe
-                if self.clientsocket.fileno() == -1:
-                    break
-                # waiting for response
-                while self.process():
-                    continue
+                try:
+                    # handle closed pipe
+                    if self.clientsocket.fileno() == -1:
+                        break
+                    # waiting for response
+                    while self.process():
+                        continue
+                except BrokenPipeError:
+                    # handle broken pipe
+                    pass
+                except BlockingIOError:
+                    # handle non blocking empty pipe
+                    pass
         except KeyboardInterrupt:
             # handle control+c
             pass
@@ -66,7 +75,7 @@ class PeerClient(Client):
             raise
         else:
             # print disconnect message
-            print("[" + self.id_key + " CLIENT] Disconnected from peer server: " + ip_address + "/" + str(port))
+            print("[" + self.server.id_key + " CLIENT] Disconnected from peer server: " + ip_address + "/" + str(port))
 
     def process(self):
         """
@@ -86,20 +95,56 @@ class PeerClient(Client):
             # do nothing if torrent hash does not match
             if not self.validate_torrent_info_hash(info_hash):
                 return False
+            # set peer_id to id_key
+            self.id_key = peer_id
             # send back port after first handshake
             payload = { 'listen-port': self.server.app.tracker_server.port }
             self.server.send(self.clientsocket, self.pwp.make_message(self.pwp.TYPE_PORT, payload))
+            # set connection non-blocking
+            self.clientsocket.setblocking(False)
+            # send choked
+            self.server.send(self.clientsocket, self.pwp.make_message(self.pwp.TYPE_CHOKE))
+            # send not not_interested
+            self.server.send(self.clientsocket, self.pwp.make_message(self.pwp.TYPE_UNINTERESTED))
         # if not but it is pwp
         elif 'id' in data:
             # parse message
-            message = self.server.pwp.parse_message(data)
-            # TODO
-            if True:
+            message = self.pwp.parse_message(data)
+            if data['id'] == self.pwp.TYPE_CHOKE:
+                # set choked status to True
+                self.status['choked'] = True
+                print("[" + self.server.id_key + " CLIENT] Set peer '" + self.id_key + "' choked.")
+            elif data['id'] == self.pwp.TYPE_UNCHOKE:
+                # set choked status to False
+                self.status['choked'] = False
+                print("[" + self.server.id_key + " CLIENT] Set peer '" + self.id_key + "' unchoked.")
+            elif data['id'] == self.pwp.TYPE_INTERESTED:
+                # set interested status to True
+                self.status['interested'] = True
+                print("[" + self.server.id_key + " CLIENT] Set peer '" + self.id_key + "' interested.")
+            elif data['id'] == self.pwp.TYPE_UNINTERESTED:
+                # set interested status to False
+                self.status['interested'] = False
+                print("[" + self.server.id_key + " CLIENT] Set peer '" + self.id_key + "' uninsterested.")
+            elif data['id'] == self.pwp.TYPE_HAVE:
+                # TODO
+                pass
+            elif data['id'] == self.pwp.TYPE_BITFIELD:
+                # TODO
+                pass
+            elif data['id'] == self.pwp.TYPE_REQUEST:
+                # TODO
+                pass
+            elif data['id'] == self.pwp.TYPE_PIECE:
+                # TODO
+                pass
+            elif data['id'] == self.pwp.TYPE_CANCEL:
+                # TODO
                 pass
             else:
-                print("[" + self.server.id_key + " SERVER] Invalid PWP ID")
+                print("[" + self.server.id_key + " CLIENT] Invalid PWP ID")
         else:
-            print("[" + self.id_key + " CLIENT] Unsupported message")
+            print("[" + self.server.id_key + " CLIENT] Unsupported message")
         return True
 
     def validate_torrent_info_hash(self, peer_torrent_info_hash):

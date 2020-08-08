@@ -22,25 +22,30 @@ class PeerClientHandler(ClientHandler):
     def __init__(self, ready, server_instance, clientsocket, addr):
         # inherit from base class
         super().__init__(ready, server_instance, clientsocket, addr)
+        # init status
+        self.status = { 'choked': True, 'interested': False }
 
     def run(self):
         # print client connected message
         print("[" + self.server.id_key + " SERVER] Client \"" + str(self.client_id) + "\" connected.")
-        try:
-            while True:
+        while True:
+            try:
                 # handle closed pipe
                 if self.clientsocket.fileno() == -1:
                     break
                 # waiting for response
                 while self.process():
                     continue
-        except BrokenPipeError:
-            # handle broken pipe
-            pass
-        except:
-            # handle other exceptions
-            print("Failed at running at client thread: ", sys.exc_info()[0])
-            raise
+            except BrokenPipeError:
+                # handle broken pipe
+                pass
+            except BlockingIOError:
+                # handle non blocking empty pipe
+                pass
+            except:
+                # handle other exceptions
+                print("Failed at running at client thread: ", sys.exc_info()[0])
+                raise
         # remove users from server client list
         self.delete_client_data()
         # print client disconnected message
@@ -66,22 +71,33 @@ class PeerClientHandler(ClientHandler):
             self.id_key = peer_id
             # send back after first handshake
             self.server.send(self.clientsocket, self.server.pwp.make_handshake(self.server.torrent_info_hash, self.server.id_key))
+            # set connection non-blocking
+            self.clientsocket.setblocking(False)
+            # send choked
+            # send choked
+            self.server.send(self.clientsocket, self.server.pwp.make_message(self.server.pwp.TYPE_CHOKE))
+            # send not not_interested
+            self.server.send(self.clientsocket, self.server.pwp.make_message(self.server.pwp.TYPE_UNINTERESTED))
         # if not but it is pwp
         elif 'id' in data:
             # parse message
             message = self.server.pwp.parse_message(data)
             if data['id'] == self.server.pwp.TYPE_CHOKE:
-                # TODO
-                pass
+                # set choked status to True
+                self.status['choked'] = True
+                print("[" + self.server.id_key + " SERVER] Set peer '" + self.id_key + "' choked.")
             elif data['id'] == self.server.pwp.TYPE_UNCHOKE:
-                # TODO
-                pass
+                # set choked status to False
+                self.status['choked'] = False
+                print("[" + self.server.id_key + " SERVER] Set peer '" + self.id_key + "' unchoked.")
             elif data['id'] == self.server.pwp.TYPE_INTERESTED:
-                # TODO
-                pass
+                # set interested status to True
+                self.status['interested'] = True
+                print("[" + self.server.id_key + " SERVER] Set peer '" + self.id_key + "' interested.")
             elif data['id'] == self.server.pwp.TYPE_UNINTERESTED:
-                # TODO
-                pass
+                # set interested status to False
+                self.status['interested'] = False
+                print("[" + self.server.id_key + " SERVER] Set peer '" + self.id_key + "' uninsterested.")
             elif data['id'] == self.server.pwp.TYPE_HAVE:
                 # TODO
                 pass

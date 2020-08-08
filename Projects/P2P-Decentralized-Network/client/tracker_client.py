@@ -24,7 +24,7 @@ class TrackerClient(Client):
     def __init__(self, server):
         """
         Inhert __init__ from base class and process new parameter
-        :param id_key:
+        :param server:
         :param torrent_info_hash:
         :return: VOID
         """
@@ -45,18 +45,25 @@ class TrackerClient(Client):
             # use the self.client to create a connection with the server
             self.clientsocket.connect((ip_address, port))
             # print connected message
-            print("[" + self.id_key + " CLIENT] Connected to tracker server: " + ip_address + "/" + str(port))
+            print("[" + self.server.id_key + " CLIENT] Connected to tracker server: " + ip_address + "/" + str(port))
             # make request to server
-            self.send(self.thp.make_request(self.ip_address, self.server.app.peer_server.port, self.id_key, path, self.torrent_info_hash, self.id_key, 0, 0, 0))
+            self.send(self.thp.make_request(self.ip_address, self.server.app.peer_server.port, self.server.id_key, path, self.torrent_info_hash, self.server.id_key, 0, 0, 0))
             # once the client creates a successful connection, the server will send handshake to this client.
             # client is put in listening mode to retrieve data from server.
             while True:
-                # handle closed pipe
-                if self.clientsocket.fileno() == -1:
-                    break
-                # waiting for response
-                while self.process():
-                    continue
+                try:
+                    # handle closed pipe
+                    if self.clientsocket.fileno() == -1:
+                        break
+                    # waiting for response
+                    while self.process():
+                        continue
+                except BrokenPipeError:
+                    # handle broken pipe
+                    pass
+                except BlockingIOError:
+                    # handle non blocking empty pipe
+                    pass
         except KeyboardInterrupt:
             # handle control+c
             pass
@@ -67,7 +74,7 @@ class TrackerClient(Client):
             raise
         else:
             # print disconnect message
-            print("[" + self.id_key + " CLIENT] Disconnected from tracker server: " + ip_address + "/" + str(port))
+            print("[" + self.server.id_key + " CLIENT] Disconnected from tracker server: " + ip_address + "/" + str(port))
 
     def process(self):
         """
@@ -89,5 +96,5 @@ class TrackerClient(Client):
                     if not peer_info['peer_id'] in self.server.swarm:
                         self.server.add_peer_to_swarm(peer_info['peer_id'].decode('ascii'), peer_info['ip'].decode('ascii'), peer_info['port'])
         else:
-            print("[" + self.id_key + " CLIENT] Unsupported message")
+            print("[" + self.server.id_key + " CLIENT] Unsupported message")
         return True

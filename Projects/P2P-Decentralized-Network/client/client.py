@@ -25,13 +25,12 @@ class Client(object):
     def __init__(self, server):
         """
         Class constructor
-        :param id_key:
+        :param server:
         :return: VOID
         """
         self.server = server
         self.ip_address = self.server.ip_address
         self.port = self.server.port
-        self.id_key = self.server.id_key
         # Creates the client socket
         # AF_INET refers to the address family ipv4.
         # The SOCK_STREAM means connection oriented TCP protocol.
@@ -65,9 +64,9 @@ class Client(object):
         :param data:
         :return: VOID
         """
-        print("[" + self.id_key + " CLIENT] ### DEBUG # SENT -- START") #debug
+        print("[" + self.server.id_key + " CLIENT] ### DEBUG # SENT -- START") #debug
         print(data) #debug
-        print("[" + self.id_key + " CLIENT] ### DEBUG # SENT -- END") #debug
+        print("[" + self.server.id_key + " CLIENT] ### DEBUG # SENT -- END") #debug
         # creates a stream of bytes
         serialized_data = pickle.dumps(data)
         while True:
@@ -101,9 +100,9 @@ class Client(object):
             return None
         # deserializes the data received
         deserialized_data = pickle.loads(raw_data)
-        print("[" + self.id_key + " CLIENT] ### DEBUG # RECEIVED -- START") #debug
+        print("[" + self.server.id_key + " CLIENT] ### DEBUG # RECEIVED -- START") #debug
         print(deserialized_data) #debug
-        print("[" + self.id_key + " CLIENT] ### DEBUG # RECEIVED -- END") #debug
+        print("[" + self.server.id_key + " CLIENT] ### DEBUG # RECEIVED -- END") #debug
         return deserialized_data
 
     def process(self):

@@ -23,21 +23,24 @@ class TrackerClientHandler(ClientHandler):
     def run(self):
         # print client connected message
         print("[" + self.server.id_key + " SERVER] Client \"" + str(self.client_id) + "\" connected.")
-        try:
-            while True:
+        while True:
+            try:
                 # handle closed pipe
                 if self.clientsocket.fileno() == -1:
                     raise
                 # waiting for response
                 while self.process():
                     continue
-        except BrokenPipeError:
-            # handle broken pipe
-            pass
-        except:
-            # handle other exceptions
-            print("Failed at running at client thread: ", sys.exc_info()[0])
-            raise
+            except BrokenPipeError:
+                # handle broken pipe
+                pass
+            except BlockingIOError:
+                # handle non blocking empty pipe
+                pass
+            except:
+                # handle other exceptions
+                print("Failed at running at client thread: ", sys.exc_info()[0])
+                raise
         # remove users from server client list
         self.delete_client_data()
         # print client disconnected message
